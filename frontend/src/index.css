@@ -1,0 +1,398 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties (Brand tokens) ───────────────── */
+:root {
+  --color-spice:      #FFC107;
+  --color-spice-dark: #FFA000;
+  --color-spice-light:#FFD54F;
+  --color-spice-muted:#FFF8E1;
+  --color-leaf:       #2E7D32;
+  --color-leaf-light: #4CAF50;
+  --color-leaf-muted: #E8F5E9;
+  --color-charcoal:   #1C1C1E;
+  --color-cream:      #FDF8F2;
+  --color-cream-200:  #FAF0E4;
+  --color-gold:       #FFD700;
+  --shadow-glow:      0 0 40px rgba(255, 193, 7, 0.25);
+  --shadow-card:      0 4px 24px rgba(0,0,0,0.07);
+  --shadow-card-hover:0 12px 48px rgba(0,0,0,0.14);
+  --shadow-float:     0 8px 32px rgba(0,0,0,0.18);
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    background-color: var(--color-cream);
+    color: var(--color-charcoal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    line-height: 1.15;
+  }
+
+  * { box-sizing: border-box; }
+
+  ::selection { background: var(--color-spice); color: white; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-cream); }
+  ::-webkit-scrollbar-thumb { background: var(--color-spice); border-radius: 99px; }
+}
+
+/* ─── Components ─────────────────────────────────────────── */
+@layer components {
+
+  /* --- Buttons --- */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--color-spice);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-spice-dark);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.75);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .btn-outline:hover {
+    background: white;
+    color: var(--color-spice);
+    transform: translateY(-2px);
+  }
+  .btn-outline:active { transform: scale(0.97); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 2px solid var(--color-spice);
+    color: var(--color-spice);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .btn-ghost:hover {
+    background: var(--color-spice);
+    color: white;
+    transform: translateY(-2px);
+  }
+  .btn-ghost:active { transform: scale(0.97); }
+
+  /* --- Cards --- */
+  .menu-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: all 0.35s ease;
+  }
+  .menu-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-6px);
+  }
+
+  .glass-panel {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* --- Layout --- */
+  .section-container {
+    @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-12;
+  }
+
+  .section-label {
+    display: block;
+    color: var(--color-spice);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    color: var(--color-charcoal);
+    line-height: 1.15;
+  }
+
+  .section-divider {
+    height: 2px;
+    width: 3.5rem;
+    background: linear-gradient(to right, var(--color-spice), transparent);
+    border-radius: 9999px;
+  }
+
+  /* --- Inputs --- */
+  .input-premium {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.875rem;
+    color: var(--color-charcoal);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .input-premium::placeholder { color: #9ca3af; }
+  .input-premium:focus {
+    border-color: var(--color-spice);
+    box-shadow: 0 0 0 4px rgba(232, 98, 26, 0.08);
+    background: white;
+  }
+
+  /* --- Dark input (for charcoal-background forms) --- */
+  .input-dark {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.07);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.875rem;
+    color: #fff;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .input-dark::placeholder { color: rgba(255,255,255,0.35); }
+  .input-dark:focus {
+    border-color: var(--color-spice);
+    box-shadow: 0 0 0 4px rgba(232, 98, 26, 0.15);
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* --- Badge --- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.7rem;
+    border-radius: 9999px;
+    background: var(--color-spice-muted);
+    color: var(--color-spice);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+  }
+
+  /* --- Skeleton --- */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+  }
+
+  /* --- Nav link --- */
+  .nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
+    padding-bottom: 2px;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-spice);
+    transition: width 0.25s ease;
+    border-radius: 9999px;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Orange gradient background */
+  .bg-orange-gradient {
+    background: linear-gradient(135deg, var(--color-spice) 0%, var(--color-spice-light) 100%);
+  }
+}
+
+/* ─── Utilities ──────────────────────────────────────────── */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  /* Dot pattern bg */
+  .bg-dots {
+    background-image: radial-gradient(circle, rgba(232,98,26,0.1) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Keyframes ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+/* ─── Scroll Indicator ───────────────────────────────────── */
+
+/* The mouse shell pulses gently */
+@keyframes mouseShell {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.25); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+/* The dot inside the mouse scrolls down */
+@keyframes scrollWheel {
+  0%   { transform: translateY(0);   opacity: 1; }
+  60%  { transform: translateY(8px); opacity: 0.3; }
+  61%  { transform: translateY(0);   opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+/* The "scroll" label fades in-out */
+@keyframes scrollLabel {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
+}
+
+/* Chevron row */
+@keyframes chevronFade {
+  0%   { opacity: 0;   transform: translateY(-4px); }
+  50%  { opacity: 1;   transform: translateY(0); }
+  100% { opacity: 0;   transform: translateY(3px); }
+}
+
+.scroll-indicator-mouse {
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(255,255,255,0.55);
+  border-radius: 13px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  animation: mouseShell 2.4s ease-in-out infinite;
+  transition: border-color 0.3s;
+}
+.scroll-indicator-mouse:hover {
+  border-color: rgba(255,255,255,0.9);
+}
+.scroll-indicator-wheel {
+  width: 4px;
+  height: 8px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 9999px;
+  animation: scrollWheel 1.8s ease-in-out infinite;
+}
+.scroll-indicator-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  animation: scrollLabel 2.4s ease-in-out infinite;
+}
+.scroll-chevron {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid rgba(255,255,255,0.6);
+  border-bottom: 1.5px solid rgba(255,255,255,0.6);
+  transform: rotate(45deg);
+  animation: chevronFade 1.6s ease-in-out infinite;
+}
+.scroll-chevron:nth-child(2) { animation-delay: 0.2s; margin-top: -4px; }
+.scroll-chevron:nth-child(3) { animation-delay: 0.4s; margin-top: -4px; }
+

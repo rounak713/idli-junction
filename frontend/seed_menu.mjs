@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const DUMMY_ITEMS = [
-  { name: 'Regular Idli',    price: 20,  category: 'Idli',      description: 'Nagpur\'s softest steamed rice cakes served hot with sambar and fresh coconut chutney.', image: '/images/idli_platter.png' },
+  { name: 'Regular Idli ',    price: 30,  category: 'Idli',      description: 'Nagpur\'s softest steamed rice cakes served hot with sambar and fresh coconut chutney.', image: '/images/idli_platter.png' },
   { name: 'Thatte Idli',             price: 60,  category: 'Idli',      description: 'Large, disc-shaped Karnataka-style idli — thick, spongy and served with a generous pour of ghee and podi.', image: '/images/hero_bg.png' },
   { name: 'Podi Mini Idli',          price: 60,  category: 'Idli',      description: 'Bite-sized soft mini idlies tossed with spicy podi and ghee.', image: '/images/idli_platter.png' },
   { name: 'Masala Dosa',             price: 60,  category: 'Dosa',      description: 'Crispy golden crepe filled with spiced potato bhaji, paired with sambar and chutneys.', image: '/images/masala_dosa.png' },
