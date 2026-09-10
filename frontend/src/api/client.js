@@ -18,6 +18,16 @@ export async function loginAdmin(email, password) {
   return res.json();
 }
 
+export async function verifyAuthToken() {
+  const res = await fetch(`${API_BASE}/auth/verify`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    throw new Error('Session expired. Please log in again.');
+  }
+  return res.json();
+}
+
 export async function fetchMenuItems() {
   const res = await fetch(`${API_BASE}/menu`);
   if (!res.ok) throw new Error('Failed to fetch menu items.');
@@ -89,18 +99,33 @@ export async function fetchContactMessages() {
   return res.json();
 }
 
-export async function updateContactStatus(id, status) {
+export async function updateContactStatus(id, status, notes = undefined) {
+  const payload = { status };
+  if (notes !== undefined) payload.notes = notes;
+
   const res = await fetch(`${API_BASE}/contact/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       ...getAuthHeaders(),
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.error || 'Failed to update message status.');
+  }
+  return res.json();
+}
+
+export async function deleteContactMessage(id) {
+  const res = await fetch(`${API_BASE}/contact/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to delete inquiry.');
   }
   return res.json();
 }

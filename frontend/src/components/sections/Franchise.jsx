@@ -66,6 +66,9 @@ User Message: ${form.message}`;
         phone: form.phone.trim(),
         email: form.email.trim(),
         message: formattedMessage,
+        city: form.city.trim(),
+        budget: form.budget,
+        type: 'franchise',
       });
       setForm({ name: '', phone: '', email: '', city: '', budget: '', message: '' });
       setStatus('sent');

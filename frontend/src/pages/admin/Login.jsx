@@ -1,27 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail]       = useState('');
-  const [password, setPassword] = useState('');
-  const [showPass, setShowPass] = useState(false);
-  const [error, setError]       = useState('');
-  const [loading, setLoading]   = useState(false);
-  const { login }               = useAuth();
-  const navigate                = useNavigate();
+  const [email, setEmail]         = useState('');
+  const [password, setPassword]   = useState('');
+  const [showPass, setShowPass]   = useState(false);
+  const [error, setError]         = useState('');
+  const [loading, setLoading]     = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutSeconds, setLockoutSeconds] = useState(0);
+  const { login }                 = useAuth();
+  const navigate                  = useNavigate();
+
+  // Lockout countdown timer
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setLockoutSeconds((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockoutSeconds]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
+    if (lockoutSeconds > 0) return;
+
+    setError('');
+    setLoading(true);
+
     try {
       await login(email, password);
+      setFailedAttempts(0);
       navigate('/admin/dashboard');
     } catch (err) {
-      setError(err?.message || 'Unable to sign in with those credentials.');
-    } finally { setLoading(false); }
+      const nextFailures = failedAttempts + 1;
+      setFailedAttempts(nextFailures);
+
+      if (nextFailures >= 5) {
+        setLockoutSeconds(60);
+        setError('Too many failed attempts. Login locked for 60 seconds.');
+      } else {
+        setError(err?.message || 'Unable to sign in with those credentials.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const isLocked = lockoutSeconds > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-charcoal via-charcoal-soft to-[#1a1a2e] flex items-center justify-center px-4">
@@ -39,7 +67,7 @@ export default function Login() {
               <Lock size={22} className="text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-white">Admin Login</h1>
-            <p className="font-body text-sm text-white/40 mt-1">Idli Junction · Management Portal</p>
+            <p className="font-body text-sm text-white/40 mt-1">Idli Junction · Secure Portal</p>
           </div>
 
           {/* Error */}
@@ -58,12 +86,14 @@ export default function Login() {
                 id="login-email"
                 type="email"
                 required
+                autoComplete="username"
+                disabled={isLocked || loading}
                 placeholder="Email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="w-full bg-white/8 border border-white/10 text-white placeholder-white/30 font-body text-sm
                            pl-10 pr-4 py-3.5 rounded-xl outline-none transition-all duration-200
-                           focus:border-spice/60 focus:ring-2 focus:ring-spice/20 focus:bg-white/10"
+                           focus:border-spice/60 focus:ring-2 focus:ring-spice/20 focus:bg-white/10 disabled:opacity-50"
               />
             </div>
 
@@ -74,30 +104,41 @@ export default function Login() {
                 id="login-password"
                 type={showPass ? 'text' : 'password'}
                 required
+                autoComplete="current-password"
+                disabled={isLocked || loading}
                 placeholder="Password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full bg-white/8 border border-white/10 text-white placeholder-white/30 font-body text-sm
                            pl-10 pr-12 py-3.5 rounded-xl outline-none transition-all duration-200
-                           focus:border-spice/60 focus:ring-2 focus:ring-spice/20 focus:bg-white/10"
+                           focus:border-spice/60 focus:ring-2 focus:ring-spice/20 focus:bg-white/10 disabled:opacity-50"
               />
-              <button type="button" onClick={() => setShowPass(!showPass)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors">
+              <button
+                type="button"
+                onClick={() => setShowPass(!showPass)}
+                disabled={isLocked || loading}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+                aria-label={showPass ? 'Hide password' : 'Show password'}
+              >
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full btn-primary justify-center py-4 rounded-xl shadow-glow mt-2 disabled:opacity-60"
+              disabled={isLocked || loading}
+              className="w-full btn-primary justify-center py-4 rounded-xl shadow-glow mt-2 disabled:opacity-50 transition-all"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Signing in…
+                  Authenticating…
                 </span>
-              ) : 'Sign In'}
+              ) : isLocked ? (
+                `Locked (${lockoutSeconds}s)`
+              ) : (
+                'Sign In'
+              )}
             </button>
           </form>
 

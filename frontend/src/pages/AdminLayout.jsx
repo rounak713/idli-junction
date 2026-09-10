@@ -2,10 +2,10 @@ import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Login from './admin/Login';
 import Dashboard from './admin/Dashboard';
-import { LogOut, LayoutDashboard, ExternalLink, ChefHat } from 'lucide-react';
+import { LogOut, ExternalLink, Users, Building2 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { label: 'Franchise Leads', href: '/admin/dashboard', icon: Users },
 ];
 
 function Sidebar() {
@@ -27,18 +27,18 @@ function Sidebar() {
       <div className="px-6 py-6 border-b border-white/8">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-orange-gradient flex items-center justify-center shadow-glow flex-shrink-0">
-            <ChefHat size={18} className="text-white" />
+            <Building2 size={18} className="text-white" />
           </div>
           <div>
             <p className="font-display text-base font-bold text-white">Idli Junction</p>
-            <p className="font-body text-[10px] text-white/35 leading-none mt-0.5">Admin Console</p>
+            <p className="font-body text-[10px] text-white/35 leading-none mt-0.5">Franchise CRM</p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-        <p className="font-body text-[10px] font-semibold uppercase tracking-widest text-white/25 px-3 mb-3">Menu</p>
+        <p className="font-body text-[10px] font-semibold uppercase tracking-widest text-white/25 px-3 mb-3">Navigation</p>
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
           const active = pathname.startsWith(href);
           return (

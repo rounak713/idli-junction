@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { loginAdmin } from '../api/client';
+import { loginAdmin, verifyAuthToken } from '../api/client';
 
 const AuthContext = createContext();
 
@@ -14,15 +14,23 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const storedUser = localStorage.getItem('idli_admin_user');
     const token = localStorage.getItem('idli_admin_token');
+
     if (storedUser && token) {
-      try {
-        setCurrentUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem('idli_admin_user');
-        localStorage.removeItem('idli_admin_token');
-      }
+      verifyAuthToken()
+        .then((data) => {
+          setCurrentUser(data.user || JSON.parse(storedUser));
+        })
+        .catch(() => {
+          localStorage.removeItem('idli_admin_user');
+          localStorage.removeItem('idli_admin_token');
+          setCurrentUser(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   async function login(email, password) {

@@ -24,6 +24,7 @@ export default function Contact() {
         phone: form.phone.trim(),
         email: form.email.trim(),
         message: form.message.trim(),
+        type: 'general',
       });
       setForm({ name: '', phone: '', email: '', message: '' });
       setStatus('sent');
