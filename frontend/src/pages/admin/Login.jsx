@@ -33,7 +33,7 @@ export default function Login() {
     try {
       await login(email, password);
       setFailedAttempts(0);
-      navigate('/admin/dashboard');
+      navigate('/idlijunction-admin-secure/dashboard');
     } catch (err) {
       const nextFailures = failedAttempts + 1;
       setFailedAttempts(nextFailures);

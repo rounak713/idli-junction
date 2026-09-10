@@ -8,7 +8,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/admin/*" element={<AdminLayout />} />
+          <Route path="/idlijunction-admin-secure/*" element={<AdminLayout />} />
           <Route path="/*" element={<PublicLayout />} />
         </Routes>
       </Router>

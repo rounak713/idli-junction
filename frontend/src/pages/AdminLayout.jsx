@@ -5,7 +5,7 @@ import Dashboard from './admin/Dashboard';
 import { LogOut, ExternalLink, Users, Building2 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'Franchise Leads', href: '/admin/dashboard', icon: Users },
+  { label: 'Franchise Leads', href: '/idlijunction-admin-secure/dashboard', icon: Users },
 ];
 
 function Sidebar() {
@@ -18,7 +18,7 @@ function Sidebar() {
     } catch (error) {
       console.warn('Unable to sign out cleanly.', error);
     }
-    window.location.href = '/admin/login';
+    window.location.href = '/idlijunction-admin-secure/login';
   };
 
   return (
@@ -87,7 +87,7 @@ function Sidebar() {
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser } = useAuth();
-  if (!currentUser) return <Navigate to="/admin/login" replace />;
+  if (!currentUser) return <Navigate to="/idlijunction-admin-secure/login" replace />;
   return children;
 };
 
