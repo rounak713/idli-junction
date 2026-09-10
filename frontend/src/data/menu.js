@@ -44,7 +44,7 @@ export const DEFAULT_MENU_ITEMS = [
     price: 100,
     category: 'Dosa',
     description: 'Our signature dosa with a special house blend of fillings and toppings.',
-    image: '/images/masala_dosa.png',
+    image: '/images/junction_special_dosa.jpg',
     available: true,
     featured: true,
   },
