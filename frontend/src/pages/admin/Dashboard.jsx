@@ -163,8 +163,13 @@ export default function Dashboard() {
   const pipelineCount = messages.filter(m => m.status === 'contacted' || m.status === 'deck_sent').length;
   const closedCount = messages.filter(m => m.status === 'closed').length;
 
+  const openLeadDetails = (lead) => {
+    setSelectedLead(lead);
+    setLeadNote(lead.notes || '');
+  };
+
   return (
-    <div className="p-6 lg:p-10 max-w-7xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto space-y-6 sm:space-y-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -303,7 +308,113 @@ export default function Dashboard() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <div className="md:hidden divide-y divide-gray-100">
+            {filteredLeads.map(lead => {
+              const statusInfo = STATUS_CONFIG[lead.status] || STATUS_CONFIG.new;
+              const isFranchise = lead.type === 'franchise' || (lead.message && lead.message.includes('[FRANCHISE'));
+              const cleanPhone = (lead.phone || '').replace(/[^0-9]/g, '');
+
+              return (
+                <div key={lead.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0 ${isFranchise ? 'bg-spice/15 text-spice' : 'bg-gray-100 text-charcoal/60'}`}>
+                        {lead.name ? lead.name.charAt(0).toUpperCase() : 'G'}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-semibold text-sm text-charcoal truncate">{lead.name || 'Anonymous Lead'}</p>
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${isFranchise ? 'bg-spice/10 text-spice border-spice/25' : 'bg-gray-100 text-charcoal/60 border-gray-200'}`}>
+                            {isFranchise ? 'Franchise' : 'Contact'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-charcoal/40 mt-0.5">
+                          {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent'}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleDelete(lead.id)}
+                      title="Delete Lead"
+                      className="w-8 h-8 rounded-lg text-charcoal/35 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-colors flex-shrink-0"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2 text-xs text-charcoal/75">
+                    <div className="flex items-center gap-1.5">
+                      <Building2 size={13} className="text-spice flex-shrink-0" />
+                      <span>{lead.city || 'Location not specified'}</span>
+                    </div>
+                    {lead.budget && (
+                      <span className="inline-block w-fit px-2 py-0.5 rounded-md bg-gold/15 text-charcoal font-semibold text-[11px]">
+                        {lead.budget}
+                      </span>
+                    )}
+                    {lead.phone && <p className="font-medium text-charcoal">{lead.phone}</p>}
+                    {lead.email && <p className="truncate text-charcoal/70">{lead.email}</p>}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {cleanPhone && (
+                      <>
+                        <a
+                          href={`https://wa.me/91${cleanPhone.length > 10 ? cleanPhone.slice(-10) : cleanPhone}?text=${encodeURIComponent(`Hello ${lead.name || ''}, thank you for your interest in the Idli Junction Franchise opportunity!`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-9 h-9 rounded-lg bg-green-50 text-green-600 hover:bg-green-600 hover:text-white flex items-center justify-center transition-colors"
+                        >
+                          <MessageCircle size={15} />
+                        </a>
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors"
+                        >
+                          <Phone size={15} />
+                        </a>
+                      </>
+                    )}
+                    {lead.email && (
+                      <a
+                        href={`mailto:${lead.email}?subject=${encodeURIComponent('Idli Junction Franchise Opportunity')}`}
+                        className="w-9 h-9 rounded-lg bg-gray-100 text-charcoal/70 hover:bg-charcoal hover:text-white flex items-center justify-center transition-colors"
+                      >
+                        <Mail size={15} />
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="relative flex-1">
+                      <select
+                        value={lead.status || 'new'}
+                        disabled={updatingId === lead.id}
+                        onChange={e => handleStatusChange(lead.id, e.target.value)}
+                        className={`w-full appearance-none text-xs font-semibold rounded-xl px-3 py-2.5 pr-7 border transition-all cursor-pointer outline-none ${statusInfo.bg}`}
+                      >
+                        <option value="new">New Lead</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="deck_sent">Deck Sent</option>
+                        <option value="closed">Closed / Converted</option>
+                        <option value="archived">Archived</option>
+                      </select>
+                      <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+                    </div>
+                    <button
+                      onClick={() => openLeadDetails(lead)}
+                      className="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-charcoal text-xs font-medium transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full text-left">
               <thead>
                 <tr className="bg-gray-50/75 border-b border-gray-100">
@@ -334,10 +445,7 @@ export default function Dashboard() {
                     <tr
                       key={lead.id}
                       className="hover:bg-cream/40 transition-colors cursor-pointer group"
-                      onClick={() => {
-                        setSelectedLead(lead);
-                        setLeadNote(lead.notes || '');
-                      }}
+                      onClick={() => openLeadDetails(lead)}
                     >
                       {/* Name & Date */}
                       <td className="px-6 py-4">
@@ -434,10 +542,7 @@ export default function Dashboard() {
                       <td className="px-6 py-4 text-right" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() => {
-                              setSelectedLead(lead);
-                              setLeadNote(lead.notes || '');
-                            }}
+                            onClick={() => openLeadDetails(lead)}
                             className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-charcoal text-xs font-medium transition-colors"
                           >
                             View Details
@@ -457,15 +562,16 @@ export default function Dashboard() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 
       {/* Lead Detail & Notes Modal */}
       {selectedLead && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/60 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-charcoal/60 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full sm:max-w-xl max-h-[92vh] sm:max-h-[85vh] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-7 py-5 border-b border-gray-100">
+            <div className="flex items-center justify-between px-4 sm:px-7 py-4 sm:py-5 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-spice/10 text-spice flex items-center justify-center font-bold text-sm">
                   {selectedLead.name ? selectedLead.name.charAt(0).toUpperCase() : 'G'}
@@ -488,7 +594,7 @@ export default function Dashboard() {
             </div>
 
             {/* Modal Body */}
-            <div className="px-7 py-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            <div className="px-4 sm:px-7 py-5 sm:py-6 space-y-5 sm:space-y-6 overflow-y-auto flex-1">
               {/* Quick Info Grid */}
               <div className="grid grid-cols-2 gap-4 bg-gray-50/80 p-4 rounded-2xl border border-gray-100">
                 <div>
@@ -510,7 +616,7 @@ export default function Dashboard() {
               </div>
 
               {/* Direct Actions */}
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {selectedLead.phone && (
                   <>
                     <a
